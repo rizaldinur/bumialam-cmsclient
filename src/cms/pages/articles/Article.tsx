@@ -34,6 +34,95 @@ const mockArticles: Article[] = [
     date: "2025-02-23",
     status: "draft",
   },
+  {
+    id: 4,
+    title: "Eco-Friendly Camping Tips",
+    excerpt:
+      "Learn how to camp sustainably and reduce your environmental impact...",
+    author: "Jane Smith",
+    date: "2025-02-22",
+    status: "draft",
+  },
+  {
+    id: 5,
+    title: "The Best National Parks to Visit",
+    excerpt: "Explore the most breathtaking national parks around the world...",
+    author: "John Doe",
+    date: "2025-02-21",
+    status: "published",
+  },
+  {
+    id: 5,
+    title: "The Best National Parks to Visit",
+    excerpt: "Explore the most breathtaking national parks around the world...",
+    author: "John Doe",
+    date: "2025-02-21",
+    status: "published",
+  },
+  {
+    id: 5,
+    title: "The Best National Parks to Visit",
+    excerpt: "Explore the most breathtaking national parks around the world...",
+    author: "John Doe",
+    date: "2025-02-21",
+    status: "published",
+  },
+  {
+    id: 5,
+    title: "The Best National Parks to Visit",
+    excerpt: "Explore the most breathtaking national parks around the world...",
+    author: "John Doe",
+    date: "2025-02-21",
+    status: "published",
+  },
+  {
+    id: 5,
+    title: "The Best National Parks to Visit",
+    excerpt: "Explore the most breathtaking national parks around the world...",
+    author: "John Doe",
+    date: "2025-02-21",
+    status: "published",
+  },
+  {
+    id: 5,
+    title: "The Best National Parks to Visit",
+    excerpt: "Explore the most breathtaking national parks around the world...",
+    author: "John Doe",
+    date: "2025-02-21",
+    status: "published",
+  },
+  {
+    id: 5,
+    title: "The Best National Parks to Visit",
+    excerpt: "Explore the most breathtaking national parks around the world...",
+    author: "John Doe",
+    date: "2025-02-21",
+    status: "published",
+  },
+  {
+    id: 5,
+    title: "The Best National Parks to Visit",
+    excerpt: "Explore the most breathtaking national parks around the world...",
+    author: "John Doe",
+    date: "2025-02-21",
+    status: "published",
+  },
+  {
+    id: 5,
+    title: "The Best National Parks to Visit",
+    excerpt: "Explore the most breathtaking national parks around the world...",
+    author: "John Doe",
+    date: "2025-02-21",
+    status: "published",
+  },
+  {
+    id: 5,
+    title: "The Best National Parks to Visit",
+    excerpt: "Explore the most breathtaking national parks around the world...",
+    author: "John Doe",
+    date: "2025-02-21",
+    status: "published",
+  },
 ];
 
 export default function ArticleList() {
@@ -45,7 +134,9 @@ export default function ArticleList() {
       <div className="mb-6 flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-semibold text-gray-900">Articles</h1>
-          <p className="text-gray-500 mt-1">Manage your articles and blog posts</p>
+          <p className="text-gray-500 mt-1">
+            Manage your articles and blog posts
+          </p>
         </div>
         <button
           onClick={() => navigate("/articles/add")}
@@ -125,7 +216,12 @@ export default function ArticleList() {
                 </td>
                 <td className="px-6 py-4">
                   <div className="flex items-center justify-end gap-2">
-                    <button className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
+                    <button
+                      onClick={() =>
+                        navigate(`/articles/update/${article.id}/`)
+                      }
+                      className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+                    >
                       <svg
                         className="w-4 h-4"
                         fill="none"
