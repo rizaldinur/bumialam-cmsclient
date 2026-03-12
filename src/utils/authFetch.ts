@@ -42,8 +42,8 @@ export async function refreshAccessToken(): Promise<string | null> {
     }
 
     // Rotate refresh_token di cookie dengan yang baru
-    if (newRefreshToken && newExpiresAt) {
-      const expireDate = new Date(newExpiresAt * 1000);
+    if (newRefreshToken) {
+      const expireDate = newExpiresAt ? new Date(newExpiresAt * 1000) : new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // fallback 7 hari
       setCookie("refresh_token", newRefreshToken, expireDate);
     }
 

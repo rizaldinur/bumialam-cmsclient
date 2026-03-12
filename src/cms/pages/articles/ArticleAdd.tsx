@@ -3,18 +3,16 @@ import { useNavigate } from "react-router-dom";
 
 interface ArticleFormData {
   title: string;
-  author: string;
   content: string;
-  image_src?: string;
+  img_file: File | null;
 }
 
 export default function ArticleAdd() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState<ArticleFormData>({
     title: "",
-    author: "",
     content: "",
-    image_src: "",
+    img_file: null,
   });
   const [saving, setSaving] = useState(false);
 
@@ -25,24 +23,28 @@ export default function ArticleAdd() {
     try {
       const token = localStorage.getItem("auth_token");
 
-      const payload = {
-        title: formData.title,
-        author: formData.author,
-        content: formData.content,
-        image_src: formData.image_src || undefined,
-      };
+      // Gunakan FormData untuk multipart/form-data
+      const formDataToSend = new FormData();
+      formDataToSend.append("title", formData.title);
+      formDataToSend.append("content", formData.content);
+      if (formData.img_file) {
+        formDataToSend.append("img_file", formData.img_file);
+      }
 
-      console.log("Sending payload:", payload);
+      console.log("Sending form data:");
+      for (const [key, value] of formDataToSend.entries()) {
+        console.log(`${key}:`, value);
+      }
 
       const response = await fetch(
         "https://nkdvrw8s-3000.asse.devtunnels.ms/v1/article",
         {
           method: "POST",
           headers: {
-            "Content-Type": "application/json",
             ...(token ? { Authorization: `Bearer ${token}` } : {}),
+            // Jangan set Content-Type, biarkan browser set otomatis dengan boundary
           },
-          body: JSON.stringify(payload),
+          body: formDataToSend,
         },
       );
 
@@ -78,21 +80,26 @@ export default function ArticleAdd() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] || null;
+    setFormData((prev) => ({ ...prev, img_file: file }));
+  };
+
   return (
-    <div className="max-w-7xl mx-2 my-2">
-      <div className="mb-6">
-        <h1 className="text-2xl font-semibold text-gray-900">Add Article</h1>
-        <p className="text-gray-500 mt-1">Create a new article</p>
+    <div className="max-w-6xl mx-auto my-4">
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-gray-900">Add Article</h1>
+        <p className="text-gray-500 mt-2">Create a new article</p>
       </div>
 
       <form
         onSubmit={handleSubmit}
-        className="bg-white rounded-xl shadow-sm border border-gray-200 p-8 px-10 py-6 space-y-6"
+        className="bg-white rounded-xl shadow-lg border border-gray-200 p-8 space-y-6"
       >
         <div>
           <label
             htmlFor="title"
-            className="block text-sm font-medium text-gray-700 mb-2"
+            className="block text-sm font-semibold text-gray-700 mb-2"
           >
             Title
           </label>
@@ -102,25 +109,8 @@ export default function ArticleAdd() {
             name="title"
             value={formData.title}
             onChange={handleChange}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent outline-none"
-            required
-          />
-        </div>
-
-        <div>
-          <label
-            htmlFor="author"
-            className="block text-sm font-medium text-gray-700 mb-2"
-          >
-            Author
-          </label>
-          <input
-            type="text"
-            id="author"
-            name="author"
-            value={formData.author}
-            onChange={handleChange}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent outline-none transition-all"
+            placeholder="Enter article title"
             required
           />
         </div>
@@ -128,7 +118,7 @@ export default function ArticleAdd() {
         <div>
           <label
             htmlFor="content"
-            className="block text-sm font-medium text-gray-700 mb-2"
+            className="block text-sm font-semibold text-gray-700 mb-2"
           >
             Content
           </label>
@@ -137,51 +127,47 @@ export default function ArticleAdd() {
             name="content"
             value={formData.content}
             onChange={handleChange}
-            rows={8}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent outline-none resize-none"
+            rows={10}
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent outline-none resize-none transition-all"
+            placeholder="Write your article content here"
             required
           />
         </div>
 
         <div>
           <label
-            htmlFor="image_src"
-            className="block text-sm font-medium text-gray-700 mb-2"
+            htmlFor="img_file"
+            className="block text-sm font-semibold text-gray-700 mb-2"
           >
-            Image URL (Optional)
+            Image <span className="text-gray-400 font-normal">(Optional)</span>
           </label>
           <input
-            type="text"
-            id="image_src"
-            name="image_src"
-            value={formData.image_src}
-            onChange={handleChange}
-            placeholder="https://example.com/image.jpg"
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent outline-none"
+            type="file"
+            id="img_file"
+            name="img_file"
+            accept="image/*"
+            onChange={handleFileChange}
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent outline-none transition-all"
           />
-          {formData.image_src && (
-            <div className="mt-3">
-              <p className="text-xs text-gray-500 mb-2">Preview:</p>
-              <div className="relative w-full max-w-md rounded-lg overflow-hidden border border-gray-200">
+          {formData.img_file && (
+            <div className="mt-4">
+              <p className="text-xs text-gray-500 mb-2 font-medium">Preview:</p>
+              <div className="relative w-full max-w-md rounded-lg overflow-hidden border border-gray-200 shadow-sm">
                 <img
-                  src={formData.image_src}
+                  src={URL.createObjectURL(formData.img_file)}
                   alt="Preview"
                   className="w-full h-48 object-cover"
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).src =
-                      "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='192'%3E%3Crect fill='%23e5e7eb' width='320' height='192'/%3E%3Ctext fill='%239ca3af' x='50%25' y='50%25' text-anchor='middle' dominant-baseline='middle'%3EInvalid URL%3C/text%3E%3C/svg%3E";
-                  }}
                 />
               </div>
             </div>
           )}
         </div>
 
-        <div className="flex items-center gap-4 pt-4">
+        <div className="flex items-center gap-4 pt-6 border-t border-gray-200">
           <button
             type="submit"
             disabled={saving}
-            className="inline-flex items-center gap-2 px-6 py-2.5 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="inline-flex items-center gap-2 px-8 py-3 bg-gray-900 text-white text-sm font-semibold rounded-lg hover:bg-gray-800 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-md"
           >
             {saving ? (
               <>
@@ -213,7 +199,7 @@ export default function ArticleAdd() {
           <button
             type="button"
             onClick={() => navigate("/cms/articles")}
-            className="inline-flex items-center gap-2 px-6 py-2.5 border border-gray-300 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-50 transition-colors"
+            className="inline-flex items-center gap-2 px-8 py-3 border border-gray-300 text-gray-700 text-sm font-semibold rounded-lg hover:bg-gray-50 transition-all"
           >
             Cancel
           </button>

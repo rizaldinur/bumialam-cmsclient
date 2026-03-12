@@ -14,14 +14,20 @@ export function useTokenRefresh() {
       if (!token) return;
 
       try {
+        const parts = token.split(".");
+        if (parts.length !== 3) {
+          console.warn("Token bukan format JWT valid");
+          localStorage.removeItem("auth_token");
+          return;
+        }
+
         // Decode JWT payload untuk ambil waktu expire
-        const payload = JSON.parse(atob(token.split(".")[1]));
+        const payload = JSON.parse(atob(parts[1]));
         const expiresAt = payload.exp * 1000; // konversi ke milliseconds
         const now = Date.now();
         const timeUntilExpiry = expiresAt - now;
 
         // Refresh 1 menit sebelum expired
-
         const refreshIn = timeUntilExpiry - 60 * 1000;
 
         if (refreshIn <= 0) {
@@ -48,8 +54,9 @@ export function useTokenRefresh() {
             window.location.href = "/login";
           }
         }, refreshIn);
-      } catch {
-        console.warn("Gagal decode JWT untuk silent refresh");
+      } catch (error) {
+        console.warn("Gagal decode JWT untuk silent refresh:", error);
+        localStorage.removeItem("auth_token");
       }
     };
 
