@@ -1,6 +1,29 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import { clearCookie } from "../../utils/authFetch";
 
 export default function Sidebar() {
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      const token = localStorage.getItem("auth_token");
+      await fetch("https://nkdvrw8s-3000.asse.devtunnels.ms/v1/auth/logout", {
+        method: "POST",
+        headers: {
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+      });
+      console.log("Berhasil logout");
+    } catch (error) {
+      console.error("Logout error:", error);
+    } finally {
+      // Clear semua auth data
+      localStorage.removeItem("auth_token");
+      clearCookie("refresh_token");
+      navigate("/cms/login");
+    }
+  };
+
   return (
     <aside className="w-72 bg-white border-r border-gray-200 h-full flex flex-col">
       {/* Logo */}
@@ -13,7 +36,7 @@ export default function Sidebar() {
         <ul className="space-y-2">
           <li>
             <NavLink
-              to="/hero"
+              to="/cms/hero"
               end
               className={({ isActive }) =>
                 `flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
@@ -41,7 +64,7 @@ export default function Sidebar() {
           </li>
           <li>
             <NavLink
-              to="/articles"
+              to="/cms/articles"
               end
               className={({ isActive }) =>
                 `flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
@@ -72,12 +95,31 @@ export default function Sidebar() {
 
       {/* Footer */}
       <div className="p-4 border-t border-gray-200">
-        <div className="flex items-center gap-3 px-4 py-2">
-          <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
-            <span className="text-sm font-medium text-gray-600">A</span>
+        <div className="flex items-center gap-3 px-2 py-2 mb-2 hover:bg-slate-200 transition-colors rounded-lg cursor-pointer">
+          <div className="w-7 h-7 rounded-full bg-gray-200 flex items-center justify-center">
+            <span className="text-xs font-medium text-gray-600">A</span>
           </div>
-          <span className="text-sm text-gray-600">Admin</span>
+          <span className="text-slate-800">Admin</span>
         </div>
+        <button
+          onClick={handleLogout}
+          className="w-full flex items-center gap-3 px-4 py-2 rounded-lg text-sm font-medium text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
+        >
+          <svg
+            className="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+            />
+          </svg>
+          Logout
+        </button>
       </div>
     </aside>
   );
