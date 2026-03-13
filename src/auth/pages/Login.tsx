@@ -41,27 +41,11 @@ export default function Login() {
         throw new Error(result?.message || "Login failed");
       }
 
-      // Log seluruh response data
-      console.log("=== LOGIN RESPONSE DATA ===");
-      console.log("Full response:", result);
-      console.log("Response keys:", Object.keys(result || {}));
-      if (result?.data) {
-        console.log("result.data:", result.data);
-        console.log("result.data keys:", Object.keys(result.data));
-      }
-
       // Ambil session data dari response - coba berbagai kemungkinan struktur
       const session = result?.data?.session;
       let accessToken = session?.access_token;
       let refreshToken = session?.refresh_token;
       let expiresAt = session?.expires_at; // Unix timestamp (seconds)
-
-      // Log user data jika ada
-      const user = result?.data?.user || result?.user;
-      if (user) {
-        console.log("User data:", user);
-        console.log("User keys:", Object.keys(user));
-      }
 
       // Fallback: coba struktur response lainnya jika session tidak ada
       if (!accessToken) {
@@ -74,19 +58,11 @@ export default function Login() {
         expiresAt = result?.data?.expires_at || result?.expires_at;
       }
 
-      console.log("=== TOKEN INFO ===");
-      console.log("Access token:", accessToken ? accessToken.substring(0, 50) + "..." : "NONE");
-      console.log("Refresh token:", refreshToken);
-      console.log("Expires at:", expiresAt);
-
       // Simpan access_token di localStorage
       if (accessToken) {
         localStorage.setItem("auth_token", accessToken);
-        console.log("Token saved to localStorage:", localStorage.getItem("auth_token")?.substring(0, 20) + "...");
       } else {
-        console.error("No access token in response!");
-        console.error("Response structure:", JSON.stringify(result, null, 2));
-        setError("No access token received from server. Please check console for details.");
+        setError("No access token received from server. Please try again.");
         setLoading(false);
         return;
       }
@@ -97,18 +73,14 @@ export default function Login() {
           ? new Date(expiresAt * 1000)
           : new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // fallback 7 hari
         setCookie("refresh_token", refreshToken, expireDate);
-        console.log("Refresh token saved to cookie");
-      } else {
-        console.log("No refresh token in response - skipping cookie storage");
       }
 
       // Force re-render/storage event untuk trigger ProtectedRoute
       window.dispatchEvent(new Event("storage"));
-      
+
       // Small delay to ensure localStorage is written
       await new Promise(resolve => setTimeout(resolve, 100));
-      
-      console.log("Navigating to /cms...");
+
       navigate("/cms", { replace: true });
     } catch (err) {
       setError(

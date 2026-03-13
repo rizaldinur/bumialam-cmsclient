@@ -14,20 +14,20 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
   useEffect(() => {
     const checkAuth = () => {
       const token = localStorage.getItem("auth_token");
-      const currentPath = location.pathname;
-      
-      console.log("ProtectedRoute - Token check:", token ? "Token exists (" + token.substring(0, 20) + "...)" : "No token");
-      console.log("ProtectedRoute - Current path:", currentPath);
+      // const currentPath = location.pathname;
+
+      // console.log("ProtectedRoute - Token check:", token ? "Token exists (" + token.substring(0, 20) + "...)" : "No token");
+      // console.log("ProtectedRoute - Current path:", currentPath);
 
       if (!token) {
-        console.log("ProtectedRoute - No token, redirecting to /cms/login");
+        // console.log("ProtectedRoute - No token, redirecting to /cms/login");
         navigate("/cms/login", { replace: true });
         setIsChecking(false);
         return;
       }
 
       // Token exists, allow access
-      console.log("ProtectedRoute - Token valid, allowing access");
+      // console.log("ProtectedRoute - Token valid, allowing access");
       setIsChecking(false);
     };
 

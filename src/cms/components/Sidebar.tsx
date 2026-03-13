@@ -13,7 +13,7 @@ export default function Sidebar() {
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
       });
-      console.log("Berhasil logout");
+      // console.log("Berhasil logout");
     } catch (error) {
       console.error("Logout error:", error);
     } finally {

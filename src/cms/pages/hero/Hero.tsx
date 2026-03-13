@@ -31,8 +31,6 @@ export default function Hero() {
         const hero = result.data?.[0] || null;
 
         setHeroData(hero);
-
-        console.log("Hero API Data:", hero);
       } catch (error) {
         console.error("Error fetching hero data:", error);
       }

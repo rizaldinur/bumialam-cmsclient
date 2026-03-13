@@ -31,11 +31,6 @@ export default function ArticleAdd() {
         formDataToSend.append("img_file", formData.img_file);
       }
 
-      console.log("Sending form data:");
-      for (const [key, value] of formDataToSend.entries()) {
-        console.log(`${key}:`, value);
-      }
-
       const response = await fetch(
         "https://nkdvrw8s-3000.asse.devtunnels.ms/v1/article",
         {
@@ -48,23 +43,18 @@ export default function ArticleAdd() {
         },
       );
 
-      console.log("Response status:", response.status);
-
       const responseData = await response.json();
-      console.log("Response data:", responseData);
 
       if (!response.ok) {
         if (response.status === 401) {
           throw new Error("Unauthorized. Please login again.");
         }
-        console.error("API error:", responseData);
         throw new Error(responseData?.message || "Failed to create article");
       }
 
       alert("Article created successfully!");
       navigate("/cms/articles");
     } catch (error) {
-      console.error("Error creating article:", error);
       alert(
         error instanceof Error ? error.message : "Failed to create article",
       );

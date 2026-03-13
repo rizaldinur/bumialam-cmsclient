@@ -26,6 +26,38 @@ export default function Article() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const handleDelete = async (id: string) => {
+    if (!confirm("Are you sure you want to delete this article?")) {
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem("auth_token");
+
+      const response = await fetch(
+        "https://nkdvrw8s-3000.asse.devtunnels.ms/v1/articles",
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
+          body: JSON.stringify({ ids: [id] }),
+        },
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData?.message || "Failed to delete article");
+      }
+
+      // Refresh the list after successful deletion
+      setArticles((prev) => prev.filter((article) => article.id !== id));
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Failed to delete article");
+    }
+  };
+
   useEffect(() => {
     const fetchArticles = async () => {
       try {
@@ -36,8 +68,6 @@ export default function Article() {
         }
 
         const result: ArticleResponse = await response.json();
-
-        console.log("API RESULT:", result);
 
         setArticles(result.data);
       } catch (err) {
@@ -187,7 +217,10 @@ export default function Article() {
                       </button>
 
                       {/* Delete */}
-                      <button className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+                      <button
+                        onClick={() => handleDelete(article.id)}
+                        className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                      >
                         <svg
                           className="w-4 h-4"
                           fill="none"

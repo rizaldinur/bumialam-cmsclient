@@ -80,11 +80,6 @@ export default function HeroEdit() {
         body.append("existing_img_url", previewUrl);
       }
 
-      console.log("Sending FormData:");
-      for (const [key, value] of body.entries()) {
-        console.log(`${key}:`, value);
-      }
-
       const response = await fetch(
         "https://nkdvrw8s-3000.asse.devtunnels.ms/v1/hero",
         {
@@ -96,10 +91,7 @@ export default function HeroEdit() {
         },
       );
 
-      console.log("Response status:", response.status);
-
       const responseData = await response.json();
-      console.log("Response data:", responseData);
 
       if (!response.ok) {
         if (response.status === 401) {

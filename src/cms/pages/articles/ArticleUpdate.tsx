@@ -32,10 +32,7 @@ export default function ArticleUpdate() {
 
   useEffect(() => {
     const fetchArticle = async () => {
-      console.log("ArticleUpdate - ID from params:", id);
-
       if (!id) {
-        console.error("ArticleUpdate - No ID provided");
         alert("Article ID is required");
         navigate("/cms/articles");
         return;
@@ -44,7 +41,6 @@ export default function ArticleUpdate() {
       try {
         const token = localStorage.getItem("auth_token");
         const url = `https://nkdvrw8s-3000.asse.devtunnels.ms/v1/article/${id}`;
-        console.log("ArticleUpdate - Fetching from:", url);
 
         const response = await fetch(url, {
           headers: {
@@ -52,22 +48,14 @@ export default function ArticleUpdate() {
           },
         });
 
-        console.log("ArticleUpdate - Response status:", response.status);
-
         if (!response.ok) {
-          const errorText = await response.text();
-          console.error("ArticleUpdate - API Error:", {
-            status: response.status,
-            statusText: response.statusText,
-            body: errorText,
-          });
+          await response.text();
           throw new Error(
             `Failed to fetch: ${response.status} ${response.statusText}`,
           );
         }
 
         const result = await response.json();
-        console.log("ArticleUpdate - Response data:", result);
 
         const article: Article = result.data;
 
@@ -81,7 +69,6 @@ export default function ArticleUpdate() {
           setExistingImageUrl(article.image_src || "");
         }
       } catch (error) {
-        console.error("ArticleUpdate - Error:", error);
         alert(
           `Failed to fetch article data: ${error instanceof Error ? error.message : "Unknown error"}`,
         );
@@ -111,11 +98,6 @@ export default function ArticleUpdate() {
         formDataToSend.append("img_file", formData.img_file);
       }
 
-      console.log("Sending form data:");
-      for (const [key, value] of formDataToSend.entries()) {
-        console.log(`${key}:`, value);
-      }
-
       const response = await fetch(
         "https://nkdvrw8s-3000.asse.devtunnels.ms/v1/article",
         {
@@ -128,21 +110,16 @@ export default function ArticleUpdate() {
         },
       );
 
-      console.log("Response status:", response.status);
-
       if (!response.ok) {
         if (response.status === 401) {
           throw new Error("Unauthorized. Please login again.");
         }
-        const errorData = await response.json().catch(() => ({}));
-        console.error("API error:", errorData);
-        throw new Error(errorData?.message || "Failed to update article");
+        throw new Error("Failed to update article");
       }
 
       alert("Article updated successfully!");
       navigate("/cms/articles");
     } catch (error) {
-      console.error("Error updating article:", error);
       alert(
         error instanceof Error ? error.message : "Failed to update article",
       );
@@ -161,51 +138,6 @@ export default function ArticleUpdate() {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] || null;
     setFormData((prev) => ({ ...prev, img_file: file }));
-  };
-
-  const handleDelete = async () => {
-    if (!id) {
-      alert("Article ID not found");
-      return;
-    }
-
-    if (!confirm("Are you sure you want to delete this article?")) {
-      return;
-    }
-
-    try {
-      const token = localStorage.getItem("auth_token");
-
-      const url = `https://nkdvrw8s-3000.asse.devtunnels.ms/v1/articles`;
-
-      const payload = {
-        ids: [id], // backend membutuhkan array
-      };
-
-      console.log("Deleting payload:", payload);
-
-      const response = await fetch(url, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
-        body: JSON.stringify(payload),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData?.message || "Failed to delete article");
-      }
-
-      alert("Article deleted successfully!");
-      navigate("/cms/articles");
-    } catch (error) {
-      console.error("Delete error:", error);
-      alert(
-        error instanceof Error ? error.message : "Failed to delete article",
-      );
-    }
   };
 
   if (loading) {
@@ -365,13 +297,6 @@ export default function ArticleUpdate() {
             className="inline-flex items-center gap-2 px-8 py-3 border border-gray-300 text-gray-700 text-sm font-semibold rounded-lg hover:bg-gray-50 transition-all"
           >
             Cancel
-          </button>
-          <button
-            type="button"
-            onClick={handleDelete}
-            className="inline-flex items-center gap-2 px-8 py-3 border border-red-300 text-red-700 text-sm font-semibold rounded-lg hover:bg-red-50 transition-all ml-auto"
-          >
-            Delete Article
           </button>
         </div>
       </form>
