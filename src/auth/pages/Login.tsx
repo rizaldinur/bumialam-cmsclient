@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import AuthLayout from "../layouts/AuthLayout";
 import { setCookie } from "../../utils/authFetch";
 
+const API_URL = import.meta.env.VITE_API_BASE_URL;
+
 export default function Login() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
@@ -18,7 +20,7 @@ export default function Login() {
 
     try {
       const response = await fetch(
-        "https://nkdvrw8s-3000.asse.devtunnels.ms/v1/auth/login",
+        API_URL+"/v1/auth/login",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

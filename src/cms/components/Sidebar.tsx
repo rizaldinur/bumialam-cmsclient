@@ -1,13 +1,16 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import { clearCookie } from "../../utils/authFetch";
 
+const API_URL = import.meta.env.VITE_API_BASE_URL;
+
+
 export default function Sidebar() {
   const navigate = useNavigate();
 
   const handleLogout = async () => {
     try {
       const token = localStorage.getItem("auth_token");
-      await fetch("https://nkdvrw8s-3000.asse.devtunnels.ms/v1/auth/logout", {
+      await fetch(API_URL+ "/v1/auth/logout", {
         method: "POST",
         headers: {
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
