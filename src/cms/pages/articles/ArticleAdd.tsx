@@ -23,7 +23,7 @@ export default function ArticleAdd() {
     setSaving(true);
 
     try {
-      const token = localStorage.getItem("auth_token");
+      // const token = localStorage.getItem("auth_token");
 
       // Gunakan FormData untuk multipart/form-data
       const formDataToSend = new FormData();
@@ -37,10 +37,10 @@ export default function ArticleAdd() {
         API_URL + "/v1/article",
         {
           method: "POST",
-          headers: {
-            ...(token ? { Authorization: `Bearer ${token}` } : {}),
-            // Jangan set Content-Type, biarkan browser set otomatis dengan boundary
-          },
+          // headers: {
+          //   ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          //   // Jangan set Content-Type, biarkan browser set otomatis dengan boundary
+          // },
           body: formDataToSend,
         },
       );

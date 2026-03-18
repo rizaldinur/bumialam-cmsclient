@@ -25,14 +25,14 @@ export default function HeroEdit() {
   useEffect(() => {
     const fetchHeroData = async () => {
       try {
-        const token = localStorage.getItem("auth_token");
+        // const token = localStorage.getItem("auth_token");
         const response = await fetch(
           API_URL+"/v1/hero",
-          {
-            headers: {
-              ...(token ? { Authorization: `Bearer ${token}` } : {}),
-            },
-          },
+          // {
+          //   headers: {
+          //     ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          //   },
+          // },
         );
         const result = await response.json();
         const hero = result.data?.[0] || null;
@@ -69,7 +69,7 @@ export default function HeroEdit() {
     setSaving(true);
 
     try {
-      const token = localStorage.getItem("auth_token");
+      // const token = localStorage.getItem("auth_token");
 
       const body = new FormData();
       body.append("id", heroId);
@@ -87,9 +87,9 @@ export default function HeroEdit() {
         API_URL+"/v1/hero",
         {
           method: "PUT",
-          headers: {
-            ...(token ? { Authorization: `Bearer ${token}` } : {}),
-          },
+          // headers: {
+          //   ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          // },
           body,
         },
       );

@@ -32,7 +32,7 @@ export default function Article() {
     }
 
     try {
-      const token = localStorage.getItem("auth_token");
+      // const token = localStorage.getItem("auth_token");
 
       const response = await fetch(
         API_URL +  "/v1/articles",
@@ -40,7 +40,7 @@ export default function Article() {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",
-            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+            // ...(token ? { Authorization: `Bearer ${token}` } : {}),
           },
           body: JSON.stringify({ ids: [id] }),
         },

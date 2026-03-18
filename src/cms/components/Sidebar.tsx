@@ -9,12 +9,12 @@ export default function Sidebar() {
 
   const handleLogout = async () => {
     try {
-      const token = localStorage.getItem("auth_token");
+      // const token = localStorage.getItem("auth_token");
       await fetch(API_URL+ "/v1/auth/logout", {
         method: "POST",
-        headers: {
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
+        // headers: {
+        //   ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        // },
       });
       // console.log("Berhasil logout");
     } catch (error) {

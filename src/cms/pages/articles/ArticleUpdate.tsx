@@ -41,14 +41,15 @@ export default function ArticleUpdate() {
       }
 
       try {
-        const token = localStorage.getItem("auth_token");
+        // const token = localStorage.getItem("auth_token");
         const url = `${API_URL}/v1/article/${id}`;
 
-        const response = await fetch(url, {
-          headers: {
-            ...(token ? { Authorization: `Bearer ${token}` } : {}),
-          },
-        });
+        const response = await fetch(url);
+        // const response = await fetch(url, {
+        //   headers: {
+        //     ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        //   },
+        // });
 
         if (!response.ok) {
           await response.text();
@@ -88,7 +89,7 @@ export default function ArticleUpdate() {
     setSaving(true);
 
     try {
-      const token = localStorage.getItem("auth_token");
+      // const token = localStorage.getItem("auth_token");
 
       // Gunakan FormData untuk multipart/form-data
       const formDataToSend = new FormData();
@@ -104,10 +105,10 @@ export default function ArticleUpdate() {
         API_URL +"/v1/article",
         {
           method: "PUT",
-          headers: {
-            ...(token ? { Authorization: `Bearer ${token}` } : {}),
-            // Jangan set Content-Type, biarkan browser set otomatis dengan boundary
-          },
+          // headers: {
+          //   ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          //   // Jangan set Content-Type, biarkan browser set otomatis dengan boundary
+          // },
           body: formDataToSend,
         },
       );
