@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import supabase from "../../../supabase";
 
 interface Article {
   id: string;
@@ -50,6 +51,20 @@ export default function Article() {
         const errorData = await response.json().catch(() => ({}));
         throw new Error(errorData?.message || "Failed to delete article");
       }
+
+      const responseData = await response.json()
+      const imgSRCs = responseData.data?.imgSRCs? responseData.data?.imgSRCs : []
+
+      const firstStringifiedPath = JSON.stringify(imgSRCs[0])
+      console.log("firstStringifiedPath, typeof: ", firstStringifiedPath, typeof firstStringifiedPath);
+      
+
+      const {data,error}=await supabase.storage.from("compro").remove(imgSRCs)
+      if(error){
+        throw new Error("Deletion error.");
+      }
+      alert(`Succesfully deleted image file(s): ${data.length} from ${imgSRCs} and found errors: ${error}` )
+      
 
       // Refresh the list after successful deletion
       setArticles((prev) => prev.filter((article) => article.id !== id));
