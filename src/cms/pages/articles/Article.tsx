@@ -17,7 +17,7 @@ interface ArticleResponse {
   data: Article[];
 }
 
-const API_URL = "https://nkdvrw8s-3000.asse.devtunnels.ms/v1/article";
+const API_URL = import.meta.env.VITE_API_BASE_URL ;
 
 export default function Article() {
   const navigate = useNavigate();
@@ -35,7 +35,7 @@ export default function Article() {
       const token = localStorage.getItem("auth_token");
 
       const response = await fetch(
-        "https://nkdvrw8s-3000.asse.devtunnels.ms/v1/articles",
+        API_URL +  "/v1/articles",
         {
           method: "DELETE",
           headers: {
@@ -61,7 +61,7 @@ export default function Article() {
   useEffect(() => {
     const fetchArticles = async () => {
       try {
-        const response = await fetch(API_URL);
+        const response = await fetch(API_URL + "/v1/article");
 
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);

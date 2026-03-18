@@ -17,6 +17,8 @@ interface ArticleFormData {
   img_file: File | null;
 }
 
+const API_URL = import.meta.env.VITE_API_BASE_URL;
+
 export default function ArticleUpdate() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -40,7 +42,7 @@ export default function ArticleUpdate() {
 
       try {
         const token = localStorage.getItem("auth_token");
-        const url = `https://nkdvrw8s-3000.asse.devtunnels.ms/v1/article/${id}`;
+        const url = `${API_URL}/v1/article/${id}`;
 
         const response = await fetch(url, {
           headers: {
@@ -99,7 +101,7 @@ export default function ArticleUpdate() {
       }
 
       const response = await fetch(
-        "https://nkdvrw8s-3000.asse.devtunnels.ms/v1/article",
+        API_URL +"/v1/article",
         {
           method: "PUT",
           headers: {

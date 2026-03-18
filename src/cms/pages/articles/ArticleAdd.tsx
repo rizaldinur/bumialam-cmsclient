@@ -7,6 +7,8 @@ interface ArticleFormData {
   img_file: File | null;
 }
 
+const API_URL = import.meta.env.VITE_API_BASE_URL;
+
 export default function ArticleAdd() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState<ArticleFormData>({
@@ -32,7 +34,7 @@ export default function ArticleAdd() {
       }
 
       const response = await fetch(
-        "https://nkdvrw8s-3000.asse.devtunnels.ms/v1/article",
+        API_URL + "/v1/article",
         {
           method: "POST",
           headers: {

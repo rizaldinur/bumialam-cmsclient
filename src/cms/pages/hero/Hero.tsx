@@ -8,6 +8,8 @@ interface HeroData {
   hero_img_src: string;
 }
 
+const API_URL = import.meta.env.VITE_API_BASE_URL;
+
 export default function Hero() {
   const navigate = useNavigate();
   const [heroData, setHeroData] = useState<HeroData | null>(null);
@@ -17,7 +19,7 @@ export default function Hero() {
       try {
         const token = localStorage.getItem("auth_token");
         const response = await fetch(
-          "https://nkdvrw8s-3000.asse.devtunnels.ms/v1/hero",
+          API_URL+"/v1/hero",
           {
             headers: {
               ...(token ? { Authorization: `Bearer ${token}` } : {}),
